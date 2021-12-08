@@ -1,0 +1,14 @@
+{
+  "initializationOptions": {
+    "configuration": {
+      "svelte": {
+        "plugin": {
+          "css": { "enable": false }
+        }
+      },
+      "typescript": { },
+      "javascript": { },
+      "prettier": { }
+    }
+  }
+}
