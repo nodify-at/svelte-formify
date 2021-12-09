@@ -1,41 +1,47 @@
 {
-  "name": "svelte-forms-validation",
-  "version": "1.2.4",
-  "types": "index.d.ts",
-  "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "package": "svelte-kit package",
-    "preview": "svelte-kit preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "eslint --ignore-path .gitignore ."
-  },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-node-resolve": "^13.0.6",
-    "@sveltejs/adapter-auto": "next",
-    "@sveltejs/kit": "next",
-    "@types/reflect-metadata": "^0.1.0",
-    "@types/yup": "^0.29.13",
-    "@typescript-eslint/eslint-plugin": "^5.6.0",
-    "@typescript-eslint/parser": "^5.6.0",
-    "eslint": "^8.4.1",
-    "eslint-plugin-svelte3": "^3.2.1",
-    "reflect-metadata": "^0.1.13",
-    "rollup-plugin-svelte": "^7.1.0",
-    "svelte": "^3.44.2",
-    "svelte-check": "^2.2.10",
-    "svelte-preprocess": "^4.9.8",
-    "svelte2tsx": "^0.4.11",
-    "tslib": "^2.3.1",
-    "typescript": "^4.5.2",
-    "yup": "^0.32.11"
-  },
-  "peerDependencies": {
-    "yup": "^0.32.11",
-    "svelte": "^3.44.2"
-  },
-  "type": "module",
-  "dependencies": {}
+    "name": "svelte-forms-validation",
+    "version": "1.5.3",
+    "types": "index.d.ts",
+    "keywords": ["svelte", "svelte-forms", "svelte forms validation"],
+    "repository": "https://github.com/nodify-at/svelte-forms-validation",
+    "author": {
+        "name": "Hasan Oezdemir",
+        "url": "https://github.com/nodify-at"
+    },
+    "scripts": {
+        "dev": "svelte-kit dev",
+        "build": "svelte-kit build",
+        "package": "svelte-kit package",
+        "preview": "svelte-kit preview",
+        "check": "svelte-check --tsconfig ./tsconfig.json",
+        "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+        "lint": "eslint --ignore-path .gitignore ."
+    },
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^21.0.1",
+        "@rollup/plugin-node-resolve": "^13.0.6",
+        "@sveltejs/adapter-auto": "next",
+        "@sveltejs/kit": "next",
+        "@types/reflect-metadata": "^0.1.0",
+        "@types/yup": "^0.29.13",
+        "@typescript-eslint/eslint-plugin": "^5.6.0",
+        "@typescript-eslint/parser": "^5.6.0",
+        "eslint": "^8.4.1",
+        "eslint-plugin-svelte3": "^3.2.1",
+        "reflect-metadata": "^0.1.13",
+        "rollup-plugin-svelte": "^7.1.0",
+        "svelte": "^3.44.2",
+        "svelte-check": "^2.2.10",
+        "svelte-preprocess": "^4.9.8",
+        "svelte2tsx": "^0.4.11",
+        "tslib": "^2.3.1",
+        "typescript": "^4.5.2",
+        "yup": "^0.32.11"
+    },
+    "peerDependencies": {
+        "yup": "^0.32.11",
+        "svelte": "^3.44.2"
+    },
+    "type": "module",
+    "dependencies": {}
 }

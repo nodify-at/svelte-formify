@@ -4,7 +4,9 @@ A library to manage and validate the forms. This library uses decorators to defi
 #### This project is still under development, be careful if you decide to use on a production environment 
 
 ## Installation
+```shell
 npm i svelte-forms-validation
+```
 
 ## Components
 This library provides 3 main core components:
@@ -21,6 +23,10 @@ a Field.
 ```typescript
 import { number, object, string } from 'yup'
 import { Field }                  from 'svelte-forms-validation'
+
+export class Role {
+    @Field(string().required().oneOf(['admin', 'test'])) name: string
+}
 
 export class User {
     @Field(string().required()) username: string
@@ -57,13 +63,15 @@ SvelteForm expect 2 parameters while constructing it.
 
     // e.g. usage of listener to get username while user types 
     $: console.log($values.username)
-    $: console.log($errors.username)
+    $: console.log($errors['role.name']) // supports dot notation
 </script>
 
 {#if $errors.username }
     <small>show some error</small>
 {/if}
-<FormField name="username" properties={$values.username}
+<FormField name="username" form={form} property={$values.username} classes="w-full p-2" placeholder="Username *" />
+<!-- e.g. nested object usage -->
+<FormField name="role.name" form={form} property={$values.role.name} classes="w-full p-2" placeholder="Role *" />
 ```
 
 

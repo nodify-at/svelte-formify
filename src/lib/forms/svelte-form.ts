@@ -1,28 +1,25 @@
-import { Writable, writable }      from 'svelte/store'
-import type { BaseSchema }         from 'yup'
-import { object, ValidationError } from 'yup'
-import { Utils }                   from './commons/utils'
-import { REFLECT_VALIDATION_KEY }  from './commons/constants'
-import type { Paths }              from '$lib/forms/commons/generic-types'
+import type { Writable }                     from 'svelte/store'
+import { writable }                          from 'svelte/store'
+import type { BaseSchema, ValidationError }  from 'yup'
+import { object }                            from 'yup'
+import { Utils }                             from './commons/utils'
+import { REFLECT_VALIDATION_KEY }            from './commons/constants'
+import type { KeysOfTransition, Prototyped } from '$lib/forms/commons/generic-types'
 
-type Prototyped<T> = { prototype: T }
-
-type KeysOfTransition<T> = Record<Paths<T>, ValidationError>
 
 export class SvelteForm<T> {
     readonly values: Writable<T>
-    readonly errors: Writable<KeysOfTransition<T>>
+    readonly errors: Writable<KeysOfTransition<T, ValidationError>>
 
     private readonly schema: BaseSchema<T>
 
     constructor(target: Prototyped<T>, initialValues?: T) {
         this.schema = createValidator(target)
         this.values = writable(initialValues)
-        this.errors = writable({} as KeysOfTransition<T>)
+        this.errors = writable({} as KeysOfTransition<T, ValidationError>)
     }
 
-    handleBlur = async (event: FocusEvent): Promise<void> => {
-        const target = event.target as HTMLInputElement
+    handleBlur = async ({ target }: { target: HTMLInputElement } ): Promise<void> => {
         try {
             await this.schema.validateAt(target.name, this.updatedValues, {recursive: true})
             this.errors.update(error => Utils.set(error, target.name, undefined))
@@ -33,7 +30,7 @@ export class SvelteForm<T> {
 
     handleFocus = ({ target }: { target: HTMLInputElement }): void => this.errors.update(error => Utils.set(error, target.name, undefined)) // reset validation
 
-    onInput = ({target}: { target: HTMLInputElement }): void => this.values.update(current => ({...current, [target.name]: target.value}))
+    onInput = ({target}: { target: HTMLInputElement }): void => this.values.update(current => Utils.set(current, target.name, target.value))
 
     isValid = (): boolean => {
         const errors = this.errorsSync
