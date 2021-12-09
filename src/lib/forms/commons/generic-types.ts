@@ -1,7 +1,5 @@
 // see: https://stackoverflow.com/a/58436959
 
-import { ValidationError } from 'yup'
-
 type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...0[]]
 
 type Join<K, P> = K extends string | number
