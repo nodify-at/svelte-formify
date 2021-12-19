@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { SvelteForm } from './forms/svelte-form'
+    import { SvelteForm }   from './forms/svelte-form'
+    import type { Context } from '$lib/forms/commons/generic-types'
 
     export let form: SvelteForm<Record<string, unknown>>
     export let classes: string
-    export let hasError: boolean
-    export let property: string | number | boolean
+    export let property: Context
     export let name: string
     export let placeholder: string
     export let disabled: 'disabled' | undefined
@@ -14,11 +14,11 @@
 <input id={ name }
        name={ name }
        class={classes}
-       class:error={hasError}
        type={ inputType }
        disabled={disabled}
+       class:error={property.error && (property.dirty || property.touched)}
        on:blur={form.handleBlur}
        on:focus={form.handleFocus}
-       value={property}
        on:input={form.onInput}
+       value={property.value}
        placeholder={placeholder} />

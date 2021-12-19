@@ -1,6 +1,6 @@
 {
     "name": "svelte-forms-validation",
-    "version": "1.5.3",
+    "version": "1.7.0",
     "types": "index.d.ts",
     "keywords": ["svelte", "svelte-forms", "svelte forms validation"],
     "repository": "https://github.com/nodify-at/svelte-forms-validation",

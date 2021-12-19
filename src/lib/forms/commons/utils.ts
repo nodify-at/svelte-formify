@@ -23,4 +23,15 @@ export class Utils {
             [base]: value
         }
     }
+
+    static get<P, R>(value: P, path: string, defaultValue?: R): P | R {
+        return path.split('.').reduce((acc, v) => {
+            try {
+                acc = acc[v]
+            } catch (e) {
+                return defaultValue
+            }
+            return acc
+        }, value)
+    }
 }

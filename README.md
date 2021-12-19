@@ -45,11 +45,18 @@ SvelteForm expect 2 parameters while constructing it.
 1. target: class defines the validation properties
 2. initialValues: initial values for this class
 
+SvelteForm stores all data in a ```Context ``` class. A context contains the properties described as below:
+
+* **error** : ValidationError thrown by yup validation
+* **touched** true on blur otherwise false
+* **dirty** if user is typing
+* **value** the value typed by user
+
 #### Usage example
 ```html
 <script lang="ts">
     import { SvelteForm } from 'svelte-forms-validation'
-    import { User }       from './models/user'
+    import { User }       from './models/user' // your model classes
 
     const {values, errors, ...form} = new SvelteForm<User>(User, {
         firstName: '',
@@ -62,8 +69,10 @@ SvelteForm expect 2 parameters while constructing it.
     })
 
     // e.g. usage of listener to get username while user types 
-    $: console.log($values.username)
-    $: console.log($errors['role.name']) // supports dot notation
+    $: console.log($values.username.value) // returns the typed value
+    $: console.log($values.username.error) // returns the error
+    $: console.log($values.username.touched) // true after onBlur
+    $: console.log($values.username.dirty) // true while user is typing
 </script>
 
 {#if $errors.username }

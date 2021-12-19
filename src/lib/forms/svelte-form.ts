@@ -1,51 +1,98 @@
-import type { Writable }                     from 'svelte/store'
-import { writable }                          from 'svelte/store'
-import type { BaseSchema, ValidationError }  from 'yup'
-import { object }                            from 'yup'
-import { Utils }                             from './commons/utils'
-import { REFLECT_VALIDATION_KEY }            from './commons/constants'
-import type { KeysOfTransition, Prototyped } from '$lib/forms/commons/generic-types'
-
+import { Writable, writable }               from 'svelte/store'
+import type { BaseSchema, ValidationError } from 'yup'
+import { object }                                               from 'yup'
+import { Utils }                                                from './commons/utils'
+import { REFLECT_VALIDATION_KEY }                               from './commons/constants'
+import type { Context, ExtendedObject, Prototyped, RecordType } from '$lib/forms/commons/generic-types'
 
 export class SvelteForm<T> {
-    readonly values: Writable<T>
-    readonly errors: Writable<KeysOfTransition<T, ValidationError>>
 
+    readonly values: Writable< ExtendedObject<T, Context>>
     private readonly schema: BaseSchema<T>
 
     constructor(target: Prototyped<T>, initialValues?: T) {
-        this.schema = createValidator(target)
-        this.values = writable(initialValues)
-        this.errors = writable({} as KeysOfTransition<T, ValidationError>)
+        this.schema = createValidator(target);
+
+        this.values = writable({} as ExtendedObject<T, Context>)
+        this.values.update(() => this.fill(initialValues as unknown as ExtendedObject<T, Context>))
+    }
+
+    fill = (values: ExtendedObject<T, Context>): ExtendedObject<T, Context> => {
+        const item = {} as ExtendedObject<T, Context>
+        Object.keys(values).forEach(key => {
+            item[key] = {}
+            if (typeof values[key] === 'object') {
+                item[key] = this.fill(item[key])
+            } else {
+                item[key] = {
+                    __context: true,
+                    value: values[key]
+                } as Context
+            }
+        })
+        return item
     }
 
     handleBlur = async ({ target }: { target: HTMLInputElement } ): Promise<void> => {
+        let error: ValidationError | undefined = undefined
         try {
-            await this.schema.validateAt(target.name, this.updatedValues, {recursive: true})
-            this.errors.update(error => Utils.set(error, target.name, undefined))
+            await this.schema.validateAt(target.name, this.rawValues, {recursive: true})
         } catch (e) {
-            this.errors.update(error => Utils.set(error, target.name, e))
+            error = e
+        } finally {
+            this.values.update(value => {
+                const current = Utils.get<ExtendedObject<T, Context>, Context>(value, target.name) as Context
+                current.value = target.value
+                current.touched = true
+                current.dirty = false
+                current.error = error
+                return value
+            })
         }
     }
 
-    handleFocus = ({ target }: { target: HTMLInputElement }): void => this.errors.update(error => Utils.set(error, target.name, undefined)) // reset validation
+    handleFocus = ({ target }: { target: HTMLInputElement }): void => {
+        this.values.update(value => {
+            const current = Utils.get<ExtendedObject<T, Context>, Context>(value, target.name) as Context
+            current.value = target.value
+            current.error = undefined
+            return value
+        })
+    }
 
-    onInput = ({target}: { target: HTMLInputElement }): void => this.values.update(current => Utils.set(current, target.name, target.value))
+    onInput = ({target}: { target: HTMLInputElement }): void => {
+        this.values.update(value => {
+            const current = Utils.get<ExtendedObject<T, Context>, Context>(value, target.name) as Context
+            current.value = target.value
+            current.dirty = true
+            current.error = undefined
+            return value
+        })
+    }
 
-    isValid = (): boolean => {
-        const errors = this.errorsSync
-        return Object.keys(errors).every(key => typeof errors[key] === 'undefined')
+    get rawValues(): T {
+        return this.getRawValues(this.updatedValues as any, {} as T)
+    }
+
+    private getRawValues(values: RecordType<T, Context>, actualObject: T): T {
+        for (const key in values) {
+                if (typeof values[key] == 'object') {
+                    if (values[key].__context) {
+                        actualObject[key] = values[key].value
+                    } else {
+                        actualObject[key] = {} as any
+                        actualObject[key] = this.getRawValues(values[key], actualObject[key]);
+                    }
+                } else if(values[key] && values[key].value) {
+                    actualObject[key] = values[key].value
+                }
+        }
+        return actualObject;
     }
 
     private get updatedValues() {
-        let val
+        let val: ExtendedObject<T, Context>
         this.values.subscribe(current => val = current)()
-        return val
-    }
-
-    private get errorsSync() {
-        let val
-        this.errors.subscribe(current => val = current)()
         return val
     }
 }
