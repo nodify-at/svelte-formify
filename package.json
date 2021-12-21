@@ -1,9 +1,9 @@
 {
-    "name": "svelte-forms-validation",
-    "version": "1.7.0",
+    "name": "svelte-formify",
+    "version": "1.0.0",
     "types": "index.d.ts",
-    "keywords": ["svelte", "svelte-forms", "svelte forms validation"],
-    "repository": "https://github.com/nodify-at/svelte-forms-validation",
+    "keywords": ["svelte", "svelte-forms", "svelte validation"],
+    "repository": "https://github.com/nodify-at/svelte-formify",
     "author": {
         "name": "Hasan Oezdemir",
         "url": "https://github.com/nodify-at"

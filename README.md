@@ -1,11 +1,11 @@
-# svelte-forms-validation
+# svelte-formify
 A library to manage and validate the forms. This library uses decorators to define validations.
 
 #### This project is still under development, be careful if you decide to use on a production environment 
 
 ## Installation
 ```shell
-npm i svelte-forms-validation
+npm i svelte-formify
 ```
 
 ## Components
@@ -22,7 +22,7 @@ a Field.
 #### Usage example:
 ```typescript
 import { number, object, string } from 'yup'
-import { Field }                  from 'svelte-forms-validation'
+import { Field }                  from 'svelte-formify'
 
 export class Role {
     @Field(string().required().oneOf(['admin', 'test'])) name: string
@@ -55,10 +55,10 @@ SvelteForm stores all data in a ```Context ``` class. A context contains the pro
 #### Usage example
 ```html
 <script lang="ts">
-    import { SvelteForm } from 'svelte-forms-validation'
+    import { SvelteForm } from 'svelte-formify'
     import { User }       from './models/user' // your model classes
 
-    const {values, errors, ...form} = new SvelteForm<User>(User, {
+    const {values,...form} = new SvelteForm<User>(User, {
         firstName: '',
         lastName: '',
         password: '',

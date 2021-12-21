@@ -7,6 +7,7 @@ export type ExtendedObject<T, V> = T extends object ? { [P in keyof T] : Extende
 export type RecordType<T, V> = Record<keyof T & keyof V, T>
 export type Context = {
     __context: boolean;
+    __key: string;
     error?: ValidationError
     touched?: boolean,
     dirty?: boolean,

@@ -5,14 +5,13 @@
     export let form: SvelteForm<Record<string, unknown>>
     export let classes: string
     export let property: Context
-    export let name: string
     export let placeholder: string
     export let disabled: 'disabled' | undefined
     export let inputType = 'text'
 </script>
 
-<input id={ name }
-       name={ name }
+<input id={ property.__key }
+       name={ property.__key }
        class={classes}
        type={ inputType }
        disabled={disabled}
