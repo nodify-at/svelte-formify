@@ -1,0 +1,17 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "isolatedModules": false,
+        "types": [
+            "node",
+            "svelte",
+            "jest"
+        ]
+    },
+    "exclude": [
+        "src/**"
+    ],
+    "include": [
+        "src/**/*.spec.ts"
+    ]
+}

@@ -8,16 +8,19 @@ import type { Context, ExtendedObject, Prototyped, RecordType } from '$lib/forms
 export class SvelteForm<T> {
 
     readonly values: Writable<ExtendedObject<T, Context>>
+    readonly isValid: Writable<boolean> = writable(false)
     private readonly schema: BaseSchema<T>
 
     constructor(target: Prototyped<T>, initialValues?: T) {
         this.schema = createValidator(target)
 
         this.values = writable({} as ExtendedObject<T, Context>)
-        this.values.update(() => this.fill(initialValues as unknown as ExtendedObject<T, Context>))
+        this.values.update(() => this.fill(initialValues))
+
+        this.values.subscribe(async () => this.isValid.set(await this.schema.isValid(this.rawValues)))
     }
 
-    fill = (values: ExtendedObject<T, Context>, parents: string[] = []): ExtendedObject<T, Context> => {
+    fill = (values: T, parents: string[] = []): ExtendedObject<T, Context> => {
         const item = {} as ExtendedObject<T, Context>
         Object.keys(values).forEach(key => {
             item[key] = {}
@@ -72,7 +75,7 @@ export class SvelteForm<T> {
     }
 
     get rawValues(): T {
-        return this.getRawValues(this.updatedValues as any, {} as T)
+        return this.getRawValues(this.updatedValues as never, {} as T)
     }
 
     private getRawValues(values: RecordType<T, Context>, actualObject: T): T {
@@ -81,7 +84,7 @@ export class SvelteForm<T> {
                 if (values[key].__context) {
                     actualObject[key] = values[key].value
                 } else {
-                    actualObject[key] = {} as any
+                    actualObject[key] = {}
                     actualObject[key] = this.getRawValues(values[key], actualObject[key])
                 }
             } else if (values[key] && values[key].value) {

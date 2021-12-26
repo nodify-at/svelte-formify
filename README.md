@@ -78,9 +78,9 @@ SvelteForm stores all data in a ```Context ``` class. A context contains the pro
 {#if $errors.username }
     <small>show some error</small>
 {/if}
-<FormField name="username" form={form} property={$values.username} classes="w-full p-2" placeholder="Username *" />
+<FormField form={form} property={$values.username} classes="w-full p-2" placeholder="Username *" />
 <!-- e.g. nested object usage -->
-<FormField name="role.name" form={form} property={$values.role.name} classes="w-full p-2" placeholder="Role *" />
+<FormField form={form} property={$values.role.name} classes="w-full p-2" placeholder="Role *" />
 ```
 
 
