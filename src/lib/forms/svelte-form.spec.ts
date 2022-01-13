@@ -9,7 +9,7 @@ describe('Svelte Form', () => {
 
     it('should create a form', () => {
         form.onInput({target: {value: 'test', name: 'name'}} as never)
-        expect(form.rawValues.name).toEqual('test')
+        expect(form.getRawValues().name).toEqual('test')
     })
 
     it('should notify changes', () => {

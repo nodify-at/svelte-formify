@@ -33,6 +33,7 @@ export class User {
     @Field(string().required()) password: string
     @Field(string().required()) firstName: string
     @Field(string().required()) lastName: string
+    @Field(object()) role: Role
 }
 ```
 
@@ -52,7 +53,39 @@ SvelteForm stores all data in a ```Context ``` class. A context contains the pro
 * **dirty** if user is typing
 * **value** the value typed by user
 
-#### Usage example
+#### How get raw values
+You can call `getRawValues` function if you need the raw values (e.g. : sending the form)
+
+````typescript
+const values = form.getRawValues()
+````
+
+#### Listening validation result
+You can use `isValid` property which is a Writable to get validation status each time after user changes something.
+
+Example: you want to enable/disable a button depends on validation status:
+
+```sveltehtml
+<script lang="ts">
+    import { SvelteForm } from 'svelte-formify'
+    import { User }       from './models/user' // your model classes
+
+    const {isValid,...form} = new SvelteForm<User>(User, {
+        firstName: '',
+        lastName: '',
+        password: '',
+        role: {
+            name: 'test'
+        },
+        username: 'hasan'
+    })
+</script>
+
+<button disabled={!$isValid}>Login</button>
+```
+
+
+### General usage example
 ```html
 <script lang="ts">
     import { SvelteForm } from 'svelte-formify'
@@ -75,7 +108,7 @@ SvelteForm stores all data in a ```Context ``` class. A context contains the pro
     $: console.log($values.username.dirty) // true while user is typing
 </script>
 
-{#if $errors.username }
+{#if $values.username.error }
     <small>show some error</small>
 {/if}
 <FormField form={form} property={$values.username} classes="w-full p-2" placeholder="Username *" />

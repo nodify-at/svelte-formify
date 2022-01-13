@@ -17,7 +17,7 @@ export class SvelteForm<T> {
         this.values = writable({} as ExtendedObject<T, Context>)
         this.values.update(() => this.fill(initialValues))
 
-        this.values.subscribe(async () => this.isValid.set(await this.schema.isValid(this.rawValues)))
+        this.values.subscribe(async () => this.isValid.set(await this.schema.isValid(this.getRawValues())))
     }
 
     fill = (values: T, parents: string[] = []): ExtendedObject<T, Context> => {
@@ -40,7 +40,7 @@ export class SvelteForm<T> {
     handleBlur = async ({target}: { target: HTMLInputElement }): Promise<void> => {
         let error: ValidationError | undefined = undefined
         try {
-            await this.schema.validateAt(target.name, this.rawValues, {recursive: true})
+            await this.schema.validateAt(target.name, this.getRawValues(), {recursive: true})
         } catch (e) {
             error = e
         } finally {
@@ -74,18 +74,18 @@ export class SvelteForm<T> {
         })
     }
 
-    get rawValues(): T {
-        return this.getRawValues(this.updatedValues as never, {} as T)
+    getRawValues = () => {
+        return this.collectValues(this.updatedValues as never, {} as T)
     }
 
-    private getRawValues(values: RecordType<T, Context>, actualObject: T): T {
+    private collectValues(values: RecordType<T, Context>, actualObject: T): T {
         for (const key in values) {
             if (typeof values[key] == 'object') {
                 if (values[key].__context) {
                     actualObject[key] = values[key].value
                 } else {
                     actualObject[key] = {}
-                    actualObject[key] = this.getRawValues(values[key], actualObject[key])
+                    actualObject[key] = this.collectValues(values[key], actualObject[key])
                 }
             } else if (values[key] && values[key].value) {
                 actualObject[key] = values[key].value
