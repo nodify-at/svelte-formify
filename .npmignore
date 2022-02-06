@@ -1,3 +1,7 @@
 src
 .svelte-kit
 node_modules
+.npmrc
+coverage
+.github
+.changeset
