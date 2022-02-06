@@ -8,6 +8,6 @@ export class Test {
     static readonly defaults = {name: '', role: { identified: 0 }}
 
     @Field(string().required()) name = ''
-    @Field(object()) role: Role = { identified: 0 }
+    @Field(object(), Role) role: Role = { identified: 0 }
 }
 

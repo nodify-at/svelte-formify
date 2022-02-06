@@ -5,7 +5,7 @@ import { Utils }                                                from './commons/
 import { REFLECT_VALIDATION_KEY }                               from './commons/constants'
 import type { Context, ExtendedObject, Prototyped, RecordType } from '$lib/forms/commons/generic-types'
 
-export class SvelteForm<T> {
+export class SvelteForm<T extends object> {
 
     readonly values: Writable<ExtendedObject<T, Context>>
     readonly isValid: Writable<boolean> = writable(false)
@@ -19,6 +19,8 @@ export class SvelteForm<T> {
 
         this.values.subscribe(async () => this.isValid.set(await this.schema.isValid(this.getRawValues())))
     }
+
+    validate = () => this.schema.validate(this.getRawValues())
 
     fill = (values: T, parents: string[] = []): ExtendedObject<T, Context> => {
         const item = {} as ExtendedObject<T, Context>
@@ -34,6 +36,7 @@ export class SvelteForm<T> {
                 } as Context
             }
         })
+        this.values.set(item)
         return item
     }
 
@@ -101,8 +104,8 @@ export class SvelteForm<T> {
     }
 }
 
-const createValidator = <T>(target: Prototyped<T>): BaseSchema<T> => {
+const createValidator = <T>(target: Prototyped<object>): BaseSchema<T> => {
     return object().shape({
-        ...Reflect.getMetadata(REFLECT_VALIDATION_KEY, target.prototype)
+        ...Reflect.getMetadata<object>(REFLECT_VALIDATION_KEY, target.prototype)
     }) as unknown as BaseSchema<T>
 }

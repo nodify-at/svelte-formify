@@ -23,7 +23,7 @@ describe('FormField',  () => {
         const input = rendered.container.querySelector('input')
 
         await fireEvent.input(input, {target: {value: 'test-changed', name: input.name}})
-        expect(form.rawValues.name).toEqual('test-changed')
+        expect(form.getRawValues().name).toEqual('test-changed')
         expect(isValid()).toBeFalsy() // we didn't render all values
     })
 

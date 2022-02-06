@@ -19,6 +19,8 @@ This library provides 3 main core components:
 Field decorator expects the declarations from `yup` library, you can nest any yup validation function while creating
 a Field.
 
+> Important: We must pass the Type explicitly for nested types. ESBuild does not support emitDecoratorMetadata yet.
+
 #### Usage example:
 ```typescript
 import { number, object, string } from 'yup'
@@ -33,7 +35,7 @@ export class User {
     @Field(string().required()) password: string
     @Field(string().required()) firstName: string
     @Field(string().required()) lastName: string
-    @Field(object()) role: Role
+    @Field(object(), Role) role: Role // due to a restriction on ESBuild we can not emit decorator metadata for now, therefore we must pass the type for nested values explicitly
 }
 ```
 
@@ -47,7 +49,6 @@ SvelteForm expect 2 parameters while constructing it.
 2. initialValues: initial values for this class
 
 SvelteForm stores all data in a ```Context ``` class. A context contains the properties described as below:
-
 * **error** : ValidationError thrown by yup validation
 * **touched** true on blur otherwise false
 * **dirty** if user is typing
@@ -56,9 +57,9 @@ SvelteForm stores all data in a ```Context ``` class. A context contains the pro
 #### How get raw values
 You can call `getRawValues` function if you need the raw values (e.g. : sending the form)
 
-````typescript
+```typescript
 const values = form.getRawValues()
-````
+```
 
 #### Listening validation result
 You can use `isValid` property which is a Writable to get validation status each time after user changes something.
