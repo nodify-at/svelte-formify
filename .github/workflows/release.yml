@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Running the tests
-        run: npm text
+        run: npm test
         
       - name: Create Release Pull Request
         uses: changesets/action@v1
