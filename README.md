@@ -101,6 +101,9 @@ Example: you want to enable/disable a button depends on validation status:
         },
         username: 'hasan'
     })
+    
+    // calling validate manually
+    form.validate().then(rawValue => {}).catch(validationError => {})
 
     // e.g. usage of listener to get username while user types 
     $: console.log($values.username.value) // returns the typed value
