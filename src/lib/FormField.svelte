@@ -19,5 +19,5 @@
        on:blur={form.handleBlur}
        on:focus={form.handleFocus}
        on:input={form.onInput}
-       value={property.value}
+       value={property.value ?? null}
        placeholder={placeholder} />

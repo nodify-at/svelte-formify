@@ -24,14 +24,8 @@ export class Utils {
         }
     }
 
-    static get<P, R>(value: P, path: string, defaultValue?: R): P | R {
-        return path.split('.').reduce((acc, v) => {
-            try {
-                acc = acc[v]
-            } catch (e) {
-                return defaultValue
-            }
-            return acc
-        }, value)
+    static get<P, R>(data: P, path: string, defaultValue?: R): P | R {
+        const value = path.split(/[.[\]]/).filter(Boolean).reduce((value, key) => (value as any)?.[key], data);
+        return value ? value : defaultValue;
     }
 }

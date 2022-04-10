@@ -16,27 +16,33 @@ export class SvelteForm<T extends object> {
 
         this.values = writable({} as ExtendedObject<T, Context>)
         this.values.update(() => this.fill(initialValues))
-
         this.values.subscribe(async () => this.isValid.set(await this.schema.isValid(this.getRawValues())))
     }
 
     validate = () => this.schema.validate(this.getRawValues())
 
+    patch = (value: T) => {
+        const context = this.fill(value)
+        this.values.set(context)
+    }
+
     fill = (values: T, parents: string[] = []): ExtendedObject<T, Context> => {
         const item = {} as ExtendedObject<T, Context>
         Object.keys(values).forEach(key => {
             item[key] = {}
-            if (typeof values[key] === 'object') {
+            if (Array.isArray(values[key]) ) {
+                item[key] = values[key].map(current => this.fill(current, [key, ...parents]))
+            }
+            else if (values[key] !== undefined && values[key] !== null && typeof values[key] === 'object') {
                 item[key] = this.fill(values[key], [key, ...parents])
             } else {
                 item[key] = {
                     __context: true,
                     __key: parents.length ? `${parents.join('.')}.${key}` : key,
-                    value: values[key]
+                    value: values[key] === null ? undefined : values[key]
                 } as Context
             }
         })
-        this.values.set(item)
         return item
     }
 
@@ -83,7 +89,10 @@ export class SvelteForm<T extends object> {
 
     private collectValues(values: RecordType<T, Context>, actualObject: T): T {
         for (const key in values) {
-            if (typeof values[key] == 'object') {
+            if (Array.isArray(values[key])) {
+                actualObject[key] = values[key].map(current => this.collectValues(current, actualObject[key] ?? {}))
+            }
+            else if (typeof values[key] == 'object') {
                 if (values[key].__context) {
                     actualObject[key] = values[key].value
                 } else {

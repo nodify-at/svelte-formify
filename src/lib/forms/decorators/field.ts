@@ -1,9 +1,12 @@
 import '@abraham/reflection'
-import type { BaseSchema, ObjectSchema } from 'yup'
-import { REFLECT_VALIDATION_KEY }               from '../commons/constants'
-import type { ObjectShape }                     from 'yup/lib/object'
+import type { ArraySchema, BaseSchema, ObjectSchema } from 'yup'
+import { REFLECT_VALIDATION_KEY }                     from '../commons/constants'
+import type { ObjectShape }                           from 'yup/lib/object'
+import { object as yupObject }                                     from 'yup'
 
-export const Field = (schema: BaseSchema, objectType?: { prototype: object }) => (target: object, property: string): void => {
+type Prototyped = { prototype: object }
+
+export const Field = (schema: BaseSchema, objectType?: Prototyped) => (target: object, property: string): void => {
 
     const type = Reflect.getMetadata<{ prototype: object}>('design:type', target, property)
 
@@ -17,6 +20,16 @@ export const Field = (schema: BaseSchema, objectType?: { prototype: object }) =>
             throw new Error('It seems like we can not emit decorator types, please pass the type as a second argument. e.g.: @Field<object(), MyClass>')
         }
         schema = (schema as ObjectSchema<ObjectShape>).shape(Reflect.getMetadata(REFLECT_VALIDATION_KEY, prototype) as never)
+    }
+
+    if (schema.type === 'array') {
+        const prototype =  objectType?.prototype
+        if (!prototype) {
+            throw new Error('For the arrays, you must give the type explicitly!')
+        }
+
+        const current = Reflect.getMetadata(REFLECT_VALIDATION_KEY, prototype) as never
+        schema = (schema as ArraySchema<never>).of(yupObject().shape(current))
     }
     const metadata = Reflect.getMetadata(REFLECT_VALIDATION_KEY, target)
     metadata[property] = schema

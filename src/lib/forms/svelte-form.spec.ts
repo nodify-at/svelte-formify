@@ -55,9 +55,34 @@ describe('Svelte Form', () => {
         expect(value.role.identified.error).toBeUndefined()
     })
 
+    it('should not have an error if the value is valid in the array', async () => {
+        const item = form.fill({name: undefined, role: {identified: 1}, roles: [{ identified: 2 }]})
+        form.values.set(item)
+
+        form.  onInput({target: {value: '0', name: 'roles[0].identified'}} as never)
+        await form.handleBlur({target: {name: 'roles[0].identified', value: '0'}} as never)
+
+        expect(value.roles[0].identified.error).toBeUndefined()
+        expect(form.getRawValues().roles[0].identified).toEqual('0')
+    })
+
     it('should fill the default values', function () {
         const item = form.fill({name: 'test', role: {identified: 1}})
         expect(item.role.identified.value).toEqual(1)
         expect(item.name.value).toEqual('test')
+    })
+
+    it('should fill the values even if a field is undefined', function () {
+        const item = form.fill({name: undefined, role: {identified: 1}})
+        expect(item.role.identified.value).toEqual(1)
+        expect(item.name).toBeDefined()
+        expect(item.name.value).toEqual(undefined)
+    })
+
+    it('should fill the array values', function () {
+        form.patch({name: undefined, role: {identified: 1}, roles: [{ identified: 2 }]})
+
+        const values = form.getRawValues()
+        expect(values.roles[0].identified).toEqual(2)
     })
 })
