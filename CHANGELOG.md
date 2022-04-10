@@ -1,5 +1,12 @@
 # svelte-formify
 
+## 1.1.16
+
+### Patch Changes
+
+- ac134a3: feature: improve type checks
+- 7046c1d: Trying to release a new tag
+
 ## 1.1.4
 
 ### Patch Changes
