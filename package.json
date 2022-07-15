@@ -45,7 +45,7 @@
     "eslint-plugin-svelte3": "^3.4.1",
     "jest": "^27.5.1",
     "rollup-plugin-svelte": "^7.1.0",
-    "svelte": "^3.47.0",
+    "svelte": "^3.49.0",
     "svelte-check": "^2.6.0",
     "svelte-jester": "^2.3.2",
     "svelte-preprocess": "^4.10.5",
@@ -57,7 +57,7 @@
     "yup": "^0.32.11"
   },
   "peerDependencies": {
-    "svelte": "^3.47.0",
+    "svelte": "^3.49.0",
     "yup": "^0.32.11"
   },
   "type": "module",
